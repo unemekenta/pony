@@ -1,4 +1,4 @@
-# Name（リポジトリ/プロジェクト/OSSなどの名前）
+# Name
 
 chat_app
 
@@ -13,7 +13,7 @@ chat_app
 * go@1.16.1
 
 ## database
-postgres
+* postgres
 
 # Installation
 
@@ -41,9 +41,9 @@ python demo.py
 
 <!-- 作成情報を列挙する -->
 
-* 作成者
+<!-- * 作成者
 * 所属
-* E-mail
+* E-mail -->
 
 # License
 <!-- ライセンスを明示する
