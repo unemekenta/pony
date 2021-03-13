@@ -36,37 +36,26 @@ button {
   line-height: 1.5rem;
 }
 
-.header {
-  display: flex;
-  align-items: center;
+button.header-logoutBtn {
+  background-color: #42b983;
+  color: #ffffff;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 0.4rem 1.0rem;
 }
 
 .user-icon {
   width: 2.0rem;
 }
 
-.header-allCommentsBtn button{
-  margin: auto 1.0rem;
-  background-color: #42b983;
-  color: #ffffff;
-}
-
-.header-logoutBtn {
-  position: absolute;
-  right: 0;
-  margin: auto 1.0rem;
-  background-color: #42b983;
-  color: #ffffff;
-}
-
 .main {
   display: flex;
-  padding: 0 2.0rem;
+  padding: 0 1.0rem;
 }
 
 .main-myMessage {
   width: 100%;
-  padding: 0 1.0rem;
+  padding: 0;
 }
 
 .main-myMessage-title {
@@ -74,22 +63,38 @@ button {
 }
 
 .main-myMessage-contents {
-  padding: 1.0rem 2.5rem;
+  padding: 1.0rem 1.0rem;
   border: solid 1px #42b983;
 }
 
-img.main-myMessage-contents-userIcon {
+.main-myMessage-contents-top {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+img.main-myMessage-contents-top-userIcon {
   width: 2.0rem;
+}
+
+button.main-myMessage-contents-top-deleteBtn {
+  width: 2.6rem;
+  font-size: 0.2rem;
+  position: absolute;
+  right: 0;
+  margin: 0;
+  padding: 0.3rem;
 }
 
 p.main-myMessage-contents-txt {
   text-align: left;
+  padding: 1.0rem 0;
 }
 
 p.main-myMessage-contents-time {
-  font-size: 0.7rem;
+  font-size: 0.2rem;
   text-align: right;
-  margin: 1.0rem 0;
+  margin: 0.4rem 0;
   color: #cccccc;
 }
 

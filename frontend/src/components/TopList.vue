@@ -1,9 +1,7 @@
 <template lang="pug">
 .top
   .header
-    router-link(to="/MyPage")
-      button.header-myPageBtn マイページ
-      button.header-logoutBtn(@click="signOut") ログアウト
+    button.header-logoutBtn(@click="signOut") ログアウト
   .main
     .main-allMessage
         h2.main-allMessage-title コメント一覧
@@ -11,8 +9,8 @@
           .main-allMessage-contents-userIcon
             img(v-bind:src="allMessage.CommentUserImage")
             p.main-allMessage-contents-userIcon-name {{allMessage.CommentUser}}
-          p.main-allMessage-contents-time {{allMessage.CreatedAt}}
           p.main-allMessage-contents-txt {{allMessage.Content}}
+          p.main-allMessage-contents-time {{allMessage.CreatedAt}}
 </template>
 
 <script>

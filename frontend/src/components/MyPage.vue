@@ -1,8 +1,6 @@
 <template lang="pug">
   .top
     .header
-      router-link.header-allCommentsBtn(to="/")
-        button 投稿一覧
       button.header-logoutBtn(@click="signOut") ログアウト
     .user
       img.user-icon(:src="userData.ImageURL")
@@ -11,13 +9,15 @@
       .main-myMessage
         h2.main-myMessage-title マイコメント
         .main-myMessage-contents(v-for="(myMessage, key) in this.myMessages" :key="key")
-          img.main-myMessage-contents-userIcon(src="../assets/logo.png")
+          .main-myMessage-contents-top
+            img.main-myMessage-contents-top-userIcon(src="../assets/logo.png")
+            button.main-myMessage-contents-top-deleteBtn(@click="deleteMessage(myMessage.ID)") 削除
           p.main-myMessage-contents-txt {{myMessage.Content}}
           p.main-myMessage-contents-time {{myMessage.CreatedAt}}
     .messageForm
-      form.messageForm-form(action="" @submit="sendMessage()")
+      form.messageForm-form(action="")
         textarea.messageForm-form-input(v-model="messageContents" placeholder="メッセージを入力")
-        button.messageForm-form-btn(type="submit") 送信
+        button.messageForm-form-btn(@click="sendMessage()") 送信
 </template>
 
 <script>
@@ -35,46 +35,7 @@ export default {
     }
   },
   created () {
-    firebase.auth().onAuthStateChanged(async user => {
-      if (user) {
-        var uid = user.uid
-        let resUser = await axios.get('http://localhost:8000/api/users/' + uid)
-        console.log('-------created', resUser.data)
-        this.userData = resUser.data
-        const UserId = resUser.data['ID']
-        let resComments = await axios.get('http://localhost:8000/api/comments/' + UserId)
-        console.log('-------comments', resComments.data)
-        this.myMessages = resComments.data
-        // const db = firebase.firestore()
-        // db.collection('comments').get().then(snap => {
-        //   const array = []
-        //   snap.forEach(doc => {
-        //     array.push(doc.data())
-        //   })
-        //   this.allMessages = array
-        // })
-        // const query = db.collection('comments').where('uid', '==', uid)
-        // query.get().then(snap => {
-        //   const array = []
-        //   snap.forEach(doc => {
-        //     // console.log(doc.data())
-        //     array.push(doc.data())
-        //   })
-        //   this.myMessages = array
-        // })
-        // const fechUser = db.collection('users').where('uid', '==', uid)
-        // fechUser.get().then(snap => {
-        //   const userArray = []
-        //   snap.forEach(doc => {
-        //     userArray.push(doc.data())
-        //   })
-        //   this.userData = userArray
-        //   this.iconUrl = this.userData[0].imageid
-        // })
-      } else {
-        console.log('No user is signed in.')
-      }
-    })
+    this.getData()
   },
   methods: {
     signOut () {
@@ -82,44 +43,62 @@ export default {
         this.$router.push('/signin')
       })
     },
-    getAllUser: async function () {
+    async getAllUser () {
       let res = await axios.get('http://localhost:8000/api/users')
       console.log(res.data)
     },
-    // getUserName (uid) {
-    //   let userIconUrls = []
-    //   const db = firebase.firestore()
-    //   const comentUser = db.collection('users').where('uid', '==', uid)
-    //   comentUser.get().then(snap => {
-    //     snap.forEach(doc => {
-    //       const userData = doc.data()
-    //       const userIconUrl = userData.imageid
-    //       console.log(typeof (userIconUrl))
-    //       userIconUrls.push(userIconUrl)
-    //     })
-    //   })
-    //   console.log(typeof (userIconUrls))
-    //   return userIconUrls
-    // },
-    sendMessage () {
-      // var date = new Date()
-      // const db = firebase.firestore()
-      firebase.auth().onAuthStateChanged(user => {
+    async getData () {
+      firebase.auth().onAuthStateChanged(async user => {
         if (user) {
-        //   axios.post('http://localhost:8000/api/comments', {
-        //     content: this.messageContents,
-        //     user_id: this.userData.userID
-        //   })
-        //     .then(function (response) {
-        //       console.log(response)
-        //     })
-        //     .catch(function (error) {
-        //       console.log(error)
-        //     })
-        // } else {
-        //   console.log('保存に失敗しました。')
+          var uid = user.uid
+          let resUser = await axios.get('http://localhost:8000/api/users/' + uid)
+          this.userData = resUser.data
+          const UserId = resUser.data['ID']
+          let resComments = await axios.get('http://localhost:8000/api/comments/' + UserId)
+          this.myMessages = resComments.data
+        } else {
+          console.log('No user is signed in.')
         }
       })
+    },
+    sendMessage () {
+      firebase.auth().onAuthStateChanged(async user => {
+        if (user) {
+          const params = new URLSearchParams();
+          params.append('content', this.messageContents)
+          params.append('user_id', this.userData.ID)
+          await axios.post('http://localhost:8000/api/comments', params)
+            .then(response => {
+              this.messageContents = "";
+              console.log(response)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        } else {
+          console.log('送信に失敗しました。')
+        }
+      })
+      this.getData()
+    },
+    deleteMessage(myMessageID) {
+      firebase.auth().onAuthStateChanged(async user => {
+        if (user) {
+          const params = myMessageID
+          console.log(myMessageID)
+          await axios.delete('http://localhost:8000/api/comments/' + params)
+            .then(response => {
+              this.messageContents = "";
+              console.log(response)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        } else {
+          console.log('削除に失敗しました。')
+        }
+      })
+      this.getData()
     }
   }
 }
