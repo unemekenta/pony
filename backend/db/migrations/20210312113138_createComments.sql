@@ -4,7 +4,7 @@
 CREATE TABLE comments (
   id SERIAL PRIMARY KEY NOT NULL,
   content varchar(255) NOT NULL,
-  user_id int NOT NULL REFERENCES users(id),
+  user_id int NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMP default CURRENT_TIMESTAMP
 );
 
