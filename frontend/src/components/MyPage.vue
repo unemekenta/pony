@@ -44,17 +44,17 @@ export default {
       })
     },
     async getAllUser () {
-      let res = await axios.get('http://localhost:8000/api/users')
+      let res = await axios.get('/api/users')
       console.log(res.data)
     },
     async getData () {
       firebase.auth().onAuthStateChanged(async user => {
         if (user) {
           var uid = user.uid
-          let resUser = await axios.get('http://localhost:8000/api/users/' + uid)
+          let resUser = await axios.get('/api/users/' + uid)
           this.userData = resUser.data
           const UserId = resUser.data['ID']
-          let resComments = await axios.get('http://localhost:8000/api/comments/' + UserId)
+          let resComments = await axios.get('/api/comments/' + UserId)
           this.myMessages = resComments.data
         } else {
           console.log('No user is signed in.')
@@ -67,7 +67,7 @@ export default {
           const params = new URLSearchParams();
           params.append('content', this.messageContents)
           params.append('user_id', this.userData.ID)
-          await axios.post('http://localhost:8000/api/comments', params)
+          await axios.post('/api/comments', params)
             .then(response => {
               this.messageContents = "";
               console.log(response)
@@ -86,7 +86,7 @@ export default {
         if (user) {
           const params = myMessageID
           console.log(myMessageID)
-          await axios.delete('http://localhost:8000/api/comments/' + params)
+          await axios.delete('/api/comments/' + params)
             .then(response => {
               this.messageContents = "";
               console.log(response)

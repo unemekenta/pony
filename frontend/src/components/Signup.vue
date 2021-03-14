@@ -33,10 +33,10 @@ export default {
         })
         firebase.auth().onAuthStateChanged(user => {
           const params = new URLSearchParams()
-          params.append('name', this.name)    // 渡したいデータ分だけappendする
+          params.append('name', this.name)
           params.append('uid', user.uid)
           console.log(user.uid)
-          axios.post('http://localhost:8000/api/users', params)
+          axios.post('/api/users', params)
             .then(function (response) {
               console.log(response)
             })
