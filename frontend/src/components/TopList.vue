@@ -21,20 +21,13 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      title: 'アクティビティ',
       allMessages: []
     }
   },
   async created () {
-    // let resAllComments = await axios.get('http://localhost:8000/api/comments')
     let resAllComments = await axios.get('/api/comments')
-    // console.log(resAllComments.data)
     for (const element of resAllComments.data) {
-      // console.log(element.UserID)
-      // console.log(element)
-      // let resCommentUser = await axios.get('http://localhost:8000/api/comment_users/' + element.UserID)
       let resCommentUser = await axios.get('/api/comment_users/' + element.UserID)
-      // console.log(resCommentUser.data)
       element.CommentUser = resCommentUser.data.Name
       element.CommentUserImage = resCommentUser.data.ImageURL
     }

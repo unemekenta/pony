@@ -31,11 +31,19 @@ export default {
       db: null,
       myMessages: [],
       userData: '',
-      messageContents: ''
+      messageContents: '',
+      uid : ''
     }
   },
   created () {
-    this.getData()
+    firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        this.uid = user.uid
+        this.getData()
+      } else {
+        console.log('No user is signed in.')
+      }
+    })
   },
   methods: {
     signOut () {
@@ -48,56 +56,37 @@ export default {
       console.log(res.data)
     },
     async getData () {
-      firebase.auth().onAuthStateChanged(async user => {
-        if (user) {
-          var uid = user.uid
-          let resUser = await axios.get('/api/users/' + uid)
-          this.userData = resUser.data
-          const UserId = resUser.data['ID']
-          let resComments = await axios.get('/api/comments/' + UserId)
-          this.myMessages = resComments.data
-        } else {
-          console.log('No user is signed in.')
-        }
-      })
+      let resUser = await axios.get('/api/users/' + this.uid)
+      this.userData = resUser.data
+      const UserId = resUser.data['ID']
+      let resComments = await axios.get('/api/comments/' + UserId)
+      this.myMessages = resComments.data
     },
-    sendMessage () {
-      firebase.auth().onAuthStateChanged(async user => {
-        if (user) {
-          const params = new URLSearchParams();
-          params.append('content', this.messageContents)
-          params.append('user_id', this.userData.ID)
-          await axios.post('/api/comments', params)
-            .then(response => {
-              this.messageContents = "";
-              console.log(response)
-            })
-            .catch(error => {
-              console.log(error)
-            })
-        } else {
-          console.log('送信に失敗しました。')
-        }
-      })
+    async sendMessage () {
+      const params = new URLSearchParams();
+      params.append('content', this.messageContents)
+      params.append('user_id', this.userData.ID)
+      await axios.post('/api/comments', params)
+        .then(response => {
+          this.messageContents = "";
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
       this.getData()
     },
-    deleteMessage(myMessageID) {
-      firebase.auth().onAuthStateChanged(async user => {
-        if (user) {
-          const params = myMessageID
-          console.log(myMessageID)
-          await axios.delete('/api/comments/' + params)
-            .then(response => {
-              this.messageContents = "";
-              console.log(response)
-            })
-            .catch(error => {
-              console.log(error)
-            })
-        } else {
-          console.log('削除に失敗しました。')
-        }
-      })
+    async deleteMessage(myMessageID) {
+      const params = myMessageID
+      console.log(myMessageID)
+      await axios.delete('/api/comments/' + params)
+        .then(response => {
+          this.messageContents = "";
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
       this.getData()
     }
   }
