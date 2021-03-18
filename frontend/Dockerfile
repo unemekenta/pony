@@ -10,6 +10,6 @@ RUN apk update && \
 
 # COPY . .
 
-CMD ["npm", "run", "serve"]
+# CMD ["npm", "run", "serve"]
 
-# CMD ["/bin/ash"]
+CMD ["/bin/ash"]
