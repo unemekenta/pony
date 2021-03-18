@@ -15,4 +15,4 @@ RUN apk add --no-cache \
     && go get bitbucket.org/liamstask/goose/cmd/goose \
     && go get github.com/lib/pq
 
-CMD ["/bin/ash"]
+CMD ["go", "run", "main.go"]
