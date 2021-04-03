@@ -54,6 +54,13 @@ type Comment struct {
 	CreatedAt time.Time
 }
 
+type Image struct {
+	ID        string `gorm:"primary_key"`
+	URL   string
+	UserID    int
+	CreatedAt time.Time
+}
+
 func getUserAll(w http.ResponseWriter, r *http.Request) {
 	var users []User
 	db := DBConn()
@@ -196,6 +203,34 @@ func deleteUserCommentByUserID(w http.ResponseWriter, r *http.Request) {
 	db.Delete(&comment)
 }
 
+func getUserImages(w http.ResponseWriter, r *http.Request) {
+	var image []Image
+	db := DBConn()
+	defer db.Close()
+
+	params := mux.Vars(r)
+	db.Order("created_at desc").Where("user_id = ?", params["id"]).Find(&image)
+	res, err := json.Marshal(image)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write(res)
+	return
+}
+
+func deleteUserImage(w http.ResponseWriter, r *http.Request) {
+	image := Image{}
+	db := DBConn()
+	defer db.Close()
+
+	params := mux.Vars(r)
+	id := params["id"]
+	image.ID = id
+	db.First(&image)
+	db.Delete(&image)
+}
+
 func main() {
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
 	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT", "OPTIONS"})
@@ -214,6 +249,9 @@ func main() {
 	r.HandleFunc("/api/comments/{id}", getUserCommentByUserID).Methods("GET")
 	r.HandleFunc("/api/comments", postComment).Methods("POST")
 	r.HandleFunc("/api/comments/{id}", deleteUserCommentByUserID).Methods("DELETE")
+
+	r.HandleFunc("/api/images/{id}", getUserImages).Methods("GET")
+	r.HandleFunc("/api/images/{id}", deleteUserImage).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(allowedOrigins, allowedMethods, allowedHeaders)(r)))
 }
