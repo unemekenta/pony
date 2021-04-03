@@ -38,9 +38,7 @@ button {
 
 .header {
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  position: relative;
+  justify-content: right;
   margin: 3.0rem 2.0rem;
 }
 
@@ -48,28 +46,21 @@ button {
   width: 2.0rem;
 }
 
-.header-myPageBtn {
-  right: 0;
+button.header-logoutBtn {
   margin: auto 1.0rem;
   background-color: #42b983;
   color: #ffffff;
-}
-
-.header-logoutBtn {
-  right: 0;
-  margin: auto 1.0rem;
-  background-color: #42b983;
-  color: #ffffff;
+  padding: 0.4rem 1.0rem;
 }
 
 .main {
   display: flex;
-  padding: 0 2.0rem;
+  padding: 0 1.0rem;
 }
 
 .main-allMessage {
   width: 100%;
-  padding: 0 1.0rem;
+  padding: 0;
 }
 
 .main-allMessage-title {

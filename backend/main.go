@@ -54,6 +54,13 @@ type Comment struct {
 	CreatedAt time.Time
 }
 
+type Image struct {
+	ID        string `gorm:"primary_key"`
+	URL   string
+	UserID    int
+	CreatedAt time.Time
+}
+
 func getUserAll(w http.ResponseWriter, r *http.Request) {
 	var users []User
 	db := DBConn()
@@ -107,7 +114,9 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	name := r.FormValue("name")
+	uid := r.FormValue("uid")
 	user.Name = name
+	user.UID = uid
 	db.Create(&user)
 }
 
@@ -143,7 +152,7 @@ func getAllComment(w http.ResponseWriter, r *http.Request) {
 	db := DBConn()
 	defer db.Close()
 
-	db.Find(&comment)
+	db.Order("created_at desc").Find(&comment)
 	res, err := json.Marshal(comment)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -159,7 +168,7 @@ func getUserCommentByUserID(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	params := mux.Vars(r)
-	db.Where("user_id = ?", params["id"]).Find(&comment)
+	db.Order("created_at desc").Where("user_id = ?", params["id"]).Find(&comment)
 	res, err := json.Marshal(comment)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -182,10 +191,50 @@ func postComment(w http.ResponseWriter, r *http.Request) {
 	db.Create(&comment)
 }
 
+func deleteUserCommentByUserID(w http.ResponseWriter, r *http.Request) {
+	comment := Comment{}
+	db := DBConn()
+	defer db.Close()
+
+	params := mux.Vars(r)
+	id := params["id"]
+	comment.ID = id
+	db.First(&comment)
+	db.Delete(&comment)
+}
+
+func getUserImages(w http.ResponseWriter, r *http.Request) {
+	var image []Image
+	db := DBConn()
+	defer db.Close()
+
+	params := mux.Vars(r)
+	db.Order("created_at desc").Where("user_id = ?", params["id"]).Find(&image)
+	res, err := json.Marshal(image)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write(res)
+	return
+}
+
+func deleteUserImage(w http.ResponseWriter, r *http.Request) {
+	image := Image{}
+	db := DBConn()
+	defer db.Close()
+
+	params := mux.Vars(r)
+	id := params["id"]
+	image.ID = id
+	db.First(&image)
+	db.Delete(&image)
+}
+
 func main() {
-	allowedOrigins := handlers.AllowedOrigins([]string{"http://localhost:8080"})
+	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
 	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT", "OPTIONS"})
-	allowedHeaders := handlers.AllowedHeaders([]string{"Authorization"})
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	r := mux.NewRouter()
 
 	// ルート(エンドポイント)
@@ -199,6 +248,10 @@ func main() {
 	r.HandleFunc("/api/comments", getAllComment).Methods("GET")
 	r.HandleFunc("/api/comments/{id}", getUserCommentByUserID).Methods("GET")
 	r.HandleFunc("/api/comments", postComment).Methods("POST")
+	r.HandleFunc("/api/comments/{id}", deleteUserCommentByUserID).Methods("DELETE")
+
+	r.HandleFunc("/api/images/{id}", getUserImages).Methods("GET")
+	r.HandleFunc("/api/images/{id}", deleteUserImage).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(allowedOrigins, allowedMethods, allowedHeaders)(r)))
 }

@@ -1,9 +1,7 @@
 <template lang="pug">
 .top
   .header
-    router-link(to="/MyPage")
-      button.header-myPageBtn マイページ
-      button.header-logoutBtn(@click="signOut") ログアウト
+    button.header-logoutBtn(@click="signOut") ログアウト
   .main
     .main-allMessage
         h2.main-allMessage-title コメント一覧
@@ -11,8 +9,8 @@
           .main-allMessage-contents-userIcon
             img(v-bind:src="allMessage.CommentUserImage")
             p.main-allMessage-contents-userIcon-name {{allMessage.CommentUser}}
-          p.main-allMessage-contents-time {{allMessage.CreatedAt}}
           p.main-allMessage-contents-txt {{allMessage.Content}}
+          p.main-allMessage-contents-time {{allMessage.CreatedAt}}
 </template>
 
 <script>
@@ -23,18 +21,13 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      title: 'アクティビティ',
       allMessages: []
     }
   },
   async created () {
-    let resAllComments = await axios.get('http://localhost:8000/api/comments')
-    // console.log(resAllComments.data)
+    let resAllComments = await axios.get('/api/comments')
     for (const element of resAllComments.data) {
-      // console.log(element.UserID)
-      // console.log(element)
-      let resCommentUser = await axios.get('http://localhost:8000/api/comment_users/' + element.UserID)
-      // console.log(resCommentUser.data)
+      let resCommentUser = await axios.get('/api/comment_users/' + element.UserID)
       element.CommentUser = resCommentUser.data.Name
       element.CommentUserImage = resCommentUser.data.ImageURL
     }

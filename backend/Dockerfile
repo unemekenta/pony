@@ -15,7 +15,5 @@ RUN apk add --no-cache \
     && go get bitbucket.org/liamstask/goose/cmd/goose \
     && go get github.com/lib/pq
 
-
-EXPOSE 8080
-
+# CMD ["go", "run", "main.go"]
 CMD ["/bin/ash"]
