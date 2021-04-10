@@ -4,6 +4,7 @@ import TopList from '@/components/TopList'
 import Signup from '@/components/Signup'
 import Signin from '@/components/Signin'
 import MyPage from '@/components/MyPage'
+import Edit from '@/components/Edit'
 import firebase from 'firebase'
 
 Vue.use(Router)
@@ -30,6 +31,12 @@ let router = new Router({
       path: '/mypage',
       name: 'MyPage',
       component: MyPage,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/edit',
+      name: 'Edit',
+      component: Edit,
       meta: { requiresAuth: true }
     }
   ]

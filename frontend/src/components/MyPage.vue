@@ -2,6 +2,8 @@
   .top
     .header
       button.header-logoutBtn(@click="signOut") ログアウト
+      router-link(to="/edit").header-editBtn
+        button.header-editBtn 個人情報編集
     .user
       img.user-icon(:src="userData.ImageURL")
       .user-name {{userData.Name}} さんのページ
