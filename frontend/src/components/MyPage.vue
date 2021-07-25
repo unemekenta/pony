@@ -1,9 +1,10 @@
 <template lang="pug">
   .top
     .header
-      button.header-logoutBtn(@click="signOut") ログアウト
-      router-link(to="/edit").header-editBtn
-        button.header-editBtn 個人情報編集
+      p マイページ
+      //- button.header-logoutBtn(@click="signOut") ログアウト
+      //- router-link(to="/edit").header-editBtn
+      //-   button.header-editBtn 個人情報編集
     .user
       img.user-icon(:src="userData.ImageURL")
       .user-name {{userData.Name}} さんのページ
@@ -12,10 +13,22 @@
         h2.main-myMessage-title マイコメント
         .main-myMessage-contents(v-for="(myMessage, key) in this.myMessages" :key="key")
           .main-myMessage-contents-top
-            img.main-myMessage-contents-top-userIcon(src="../assets/logo.png")
-            button.main-myMessage-contents-top-deleteBtn(@click="deleteMessage(myMessage.ID)") 削除
+            fa-icon.main-myMessage-contents-top-deleteBtn(@click="deleteMessage(myMessage.ID)")(icon="times-circle")
           p.main-myMessage-contents-txt {{myMessage.Content}}
-          p.main-myMessage-contents-time {{myMessage.CreatedAt}}
+          .main-myMessage-contents-category
+            li カテゴリ
+            li カテゴリ
+          p.main-myMessage-contents-time {{createDate(myMessage.CreatedAt)}}
+      .main-menu02
+        .menu-menu02-content
+          .menu-menu02-content-head
+            | メニュー
+          .menu-menu02-content-items
+            .menu-menu02-content-items-item
+              router-link( to="/" ) HOME
+            .menu-menu02-content-items-item
+              router-link(to="/edit").header-editBtn 個人情報編集
+            .menu-menu02-content-items-item(@click="signOut") ログアウト
     .messageForm
       form.messageForm-form(action="")
         textarea.messageForm-form-input(v-model="messageContents" placeholder="メッセージを入力")
@@ -90,7 +103,13 @@ export default {
           console.log(error)
         })
       this.getData()
-    }
+    },
+    createDate (createdAt) {
+      let formattedDate = createdAt.split(/T|:|-/);
+      formattedDate.pop()
+      let dateString = formattedDate[0] + '年' + formattedDate[1]+ '月' + formattedDate[2] + '日' + formattedDate[3] + '時' + formattedDate[4] + '分';
+      return dateString;
+    },
   }
 }
 </script>
