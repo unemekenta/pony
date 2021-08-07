@@ -56,9 +56,22 @@ type Comment struct {
 
 type Image struct {
 	ID        string `gorm:"primary_key"`
-	URL   string
+	URL       string
 	UserID    int
 	CreatedAt time.Time
+}
+
+type Category struct {
+	ID        string `gorm:"primary_key"`
+	Content   string `gorm:"ForeignKey:Category"`
+	CreatedAt time.Time
+}
+
+type CategoriesOfComment struct {
+	ID         string `gorm:"primary_key"`
+	CommentID  int
+	CategoryID int
+	CreatedAt  time.Time
 }
 
 func getUserAll(w http.ResponseWriter, r *http.Request) {
@@ -231,6 +244,44 @@ func deleteUserImage(w http.ResponseWriter, r *http.Request) {
 	db.Delete(&image)
 }
 
+func getCategoriesAll(w http.ResponseWriter, r *http.Request) {
+	var category []Category
+	db := DBConn()
+	defer db.Close()
+
+	db.Order("id").Find(&category)
+	res, err := json.Marshal(category)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write(res)
+	return
+}
+
+func getAttachedCategoriesByCommentID(w http.ResponseWriter, r *http.Request) {
+	var categories_of_comment []CategoriesOfComment
+	var category []Category
+	db := DBConn()
+	defer db.Close()
+
+	params := mux.Vars(r)
+	db.Order("created_at desc").Where("comment_id = ?", params["comment_id"]).Find(&categories_of_comment)
+
+	categories_id := categories_of_comment[0].CategoryID
+
+	db.Order("id").Find(&category).Where("id = ?", categories_id).Find(&category)
+
+	res, err := json.Marshal(category)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(res)
+	return
+}
+
 func main() {
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
 	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT", "OPTIONS"})
@@ -252,6 +303,10 @@ func main() {
 
 	r.HandleFunc("/api/images/{id}", getUserImages).Methods("GET")
 	r.HandleFunc("/api/images/{id}", deleteUserImage).Methods("DELETE")
+
+	r.HandleFunc("/api/categories", getCategoriesAll).Methods("GET")
+
+	r.HandleFunc("/api/attachedCategories/{comment_id}", getAttachedCategoriesByCommentID).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(allowedOrigins, allowedMethods, allowedHeaders)(r)))
 }

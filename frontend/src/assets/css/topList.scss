@@ -1,5 +1,5 @@
 html {
-  font-size: 16px;
+  font-size: 10px;
 }
 
 p {
@@ -31,6 +31,16 @@ button {
   border: none;
 }
 
+.allWrapper{
+  background-color: #E4E4E4;
+  padding: 10px 0;
+}
+
+.l-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .top {
   margin-bottom: 5.0rem;
   line-height: 1.5rem;
@@ -39,7 +49,7 @@ button {
 .header {
   display: flex;
   justify-content: right;
-  margin: 3.0rem 2.0rem;
+  padding: 3.0rem 2.0rem;
 }
 
 .user-icon {
@@ -58,18 +68,78 @@ button.header-logoutBtn {
   padding: 0 1.0rem;
 }
 
+.main-menu01 {
+  background-color: #ffffff;
+  width: 180px;
+  margin-right: 20px;
+  text-align: left;
+}
+
+.menu-menu01-content-head {
+  padding: 5px 10px;
+  border-bottom: solid 1px #E4E4E4;
+  font-weight: bold;
+}
+
+.menu-menu01-content-item li{
+  padding: 5px 10px;
+}
+
+.main-menu02 {
+  width: 300px;
+  margin-left: 20px;
+  background-color: #ffffff;
+  text-align: left;
+}
+
+.menu-menu02-content-head {
+  padding: 5px 10px;
+  border-bottom: solid 1px #E4E4E4;
+  font-weight: bold;
+}
+
+.menu-menu02-content-items {
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+
+.menu-menu02-content-items-item {
+  background-color: #42b983;
+  padding: 5px 10px;
+  border: solid 1px #E4E4E4;
+  font-weight: bold;
+  margin: 10px 5px;
+  color: #ffffff;
+}
+
+.menu-menu02-content-items-item:hover {
+  opacity: 0.3;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.menu-menu02-content-items-item a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
 .main-allMessage {
   width: 100%;
   padding: 0;
+  background-color: #ffffff;
 }
 
 .main-allMessage-title {
-  margin: 2.0rem 0;
+  padding: 15px 20px;
+  text-align: left;
+  border-bottom: solid 1px #E4E4E4;
+  font-weight: bold;
 }
 
 .main-allMessage-contents {
-  padding: 1.0rem 2.5rem;
-  border: solid 1px #42b983;
+  padding: 15px 20px;
+  border-bottom: solid 1px #E4E4E4;
 }
 
 .main-allMessage-contents-userIcon {
@@ -77,8 +147,9 @@ button.header-logoutBtn {
 }
 
 .main-allMessage-contents-userIcon img {
-  width: 3.0rem;
-  height: 3.0rem;
+  width: 30px;
+  height: 30px;
+  margin: auto 0;
 }
 
 p.main-allMessage-contents-userIcon-name {
@@ -88,14 +159,28 @@ p.main-allMessage-contents-userIcon-name {
 }
 
 p.main-allMessage-contents-txt {
+  font-size: 18px;
+  font-weight: bold;
   text-align: left;
-  margin: 1.0rem 0;
+  margin: 10px 0;
+}
+
+.main-allMessage-contents-category {
+  display: flex;
+  justify-content: left;
+}
+
+.main-allMessage-contents-category li {
+  border: solid 1px #E4E4E4;
+  margin: 0 5px 0 0;
+  padding: 5px 10px;
+  background-color: #cccccc;
+  color: #ffffff;
 }
 
 p.main-allMessage-contents-time {
-  font-size: 0.7rem;
-  line-height: 2.0rem;
-  margin: 0.4rem 0;
+  font-size: 12px;
+  margin: 10px 0;
   color: #cccccc;
   text-align: left;
 }
