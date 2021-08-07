@@ -19,6 +19,7 @@ export default {
   name: 'Signup',
   data () {
     return {
+      name: '',
       email: '',
       password: ''
     }
